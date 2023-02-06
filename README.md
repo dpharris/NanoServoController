@@ -1,11 +1,11 @@
 # NanoServoController
-A servo controller that uses a Nano, and has 8 channels of servos controlled by 8 inputs.  In addition, servo endpoints can be set with 4 additional inputs.  
+A servo controller that uses a Nano, and has 8 channels of servos controlled by 8 inputs.  In addition, two servo endpoints can be set with 4 additional inputs.  
 
 The inputs can be connected to DPST slide or toggle switched with the centre to the board pins D0-D7 and the other two terminals connected to groaund and 5V.  Or, 8 pushbuttons connected to ground and to D0-D7.  In this case one has to uncomment one line in tne sketch: "#define ALTERNATE" to allow the pushbuttons to choose the two servo psotitions alternately.  
 
 The outputs D8-D13, A4 and A5 are connected to eight servos.  
 
-There are four more buttons defined, connected to A0-3:
+There are four more buttons defined, connected to A0-3, to change the servos endpoints:
   A0 - Next servo - choose the next servo
   A1 - Next position - choose the next servo position
   A2 - Up -- move the chosen servo one way
