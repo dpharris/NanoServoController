@@ -27,7 +27,7 @@ Inexpensive motherboards can be used to make life easier, since they have a powe
 # Using buttons
 This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216852630-f47145d2-90c4-4add-acea-3f3274a1a7bd.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216859615-54c74fef-9944-403e-8a4f-5e01b2bcea6c.png">
 
 # Using with LCC Tower
 
