@@ -31,4 +31,4 @@ This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 
 # Using with LCC Tower
 
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216852902-4efff823-82a0-4a34-801e-233004028c4b.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216858348-4461f7a8-7fe8-469c-8d54-a1ba425543e3.png">
