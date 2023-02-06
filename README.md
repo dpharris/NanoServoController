@@ -16,7 +16,7 @@ It is also possible to connect this to model raliroad accessories, such as RRCir
 
 # Using DPST switches
 
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216854352-54bfe4e7-76e4-45af-9b2a-767f459ca8b5.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216855232-6ab23894-a9aa-4f50-a7a8-fb32ff9afed3.png">
 
 # Using mother board and DPST switches
 
