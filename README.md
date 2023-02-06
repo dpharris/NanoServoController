@@ -22,7 +22,7 @@ It is also possible to connect this to model raliroad accessories, such as RRCir
 
 Inexpensive motherboards can be used to make life easier, since they have a power supply and servo connectors, for example: https://www.aliexpress.com/item/1005002054420577.html
 
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216853470-04390733-bc96-47d3-9606-a6607a1aa41e.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216858950-60f5566a-00ab-4bf4-8a68-7a956a337cb7.png">
 
 # Using buttons
 This will require the "#define ALTERNATE" line to be uncommented in the sketch.
