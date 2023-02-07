@@ -19,7 +19,7 @@
 //          +------+
 //  input1--| Nano |--servo1
 //         ...
-//  input8--|      |--servo9
+//  input8--|      |--servo8
 //          +------+
 //          / | \  \
 // nextservo  |  up down
