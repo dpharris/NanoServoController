@@ -14,6 +14,10 @@ There are four more buttons defined, connected to A0-3, to change the servos end
   
 It is also possible to connect this to model raliroad accessories, such as RRCirkits LCC Tower.  
 
+# Compiling / Using
+
+Copy the code into a new sketch in Arduin IDE.  You should use Library Manager to download the ServoEasing library.  
+
 # Using DPST switches
 
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216859313-27cc5578-d9dc-42cc-be6b-92511c8e8620.png">
