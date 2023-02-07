@@ -32,3 +32,8 @@ This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 # Using with LCC Tower
 
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216859938-4b44d31d-98fe-43fe-96b8-5b31501ca698.png">
+
+# Real World Setup
+<img width="539" alt="image" src="https://user-images.githubusercontent.com/538698/217139424-1f8224ca-cb6d-472a-86f0-e7b92857b0ff.png">
+
+## Setting Servo Positions
