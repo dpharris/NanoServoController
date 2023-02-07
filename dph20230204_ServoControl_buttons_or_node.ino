@@ -1,5 +1,6 @@
 // Servo controller
-// uses servo-easing to obtain a slow smooth movement
+// uses servo-easing to obtain a slow smooth movement 
+//    (see https://github.com/ArminJo/ServoEasing -- can be downloaded using Manage Libraries)
 //   NB: this library supprts the use of an I2C PCA9685 servo expander
 //       but would need modifications to this code
 // Variable number of input pins (nservos), controlling an equal number of Servos
