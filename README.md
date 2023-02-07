@@ -37,3 +37,4 @@ This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 <img width="539" alt="image" src="https://user-images.githubusercontent.com/538698/217139424-1f8224ca-cb6d-472a-86f0-e7b92857b0ff.png">
 
 ## Setting Servo Positions
+https://youtu.be/eLYbbh9UrcI
