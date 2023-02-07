@@ -38,3 +38,8 @@ This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 
 ## Setting Servo Positions
 https://youtu.be/eLYbbh9UrcI
+
+## Operating the Servos from LCC
+This set up has an LCC-Loconet-USB, and two LCC Towers.  I have programmed a pushbutton to send alternating eventids.  The same Tower consumes these, and moves a servo to one endpoint and then to the other endpoint.  
+
+https://youtu.be/-KqmzUoACQ0
