@@ -1,6 +1,5 @@
 // Servo controller
-// uses servo-easing to obtain a slow smooth movement 
-//    (see https://github.com/ArminJo/ServoEasing -- can be downloaded using Manage Libraries)
+// uses servo-easing to obtain a slow smooth movement
 //   NB: this library supprts the use of an I2C PCA9685 servo expander
 //       but would need modifications to this code
 // Variable number of input pins (nservos), controlling an equal number of Servos
@@ -19,7 +18,7 @@
 //          +------+
 //  input1--| Nano |--servo1
 //         ...
-//  input8--|      |--servo8
+//  input8--|      |--servo9
 //          +------+
 //          / | \  \
 // nextservo  |  up down
@@ -50,19 +49,23 @@
 //     Program a second "command event" to "Set output low"
 //     On receiving these eventids, the servo should move to one position of the other.  
 
-#if defined(ARDUINO_AVR_NANO) | defined(ARDUINO_AVR_UNO)
+#if defined(__AVR__)
 #else
-  #error "This sketch is primarily for the UNO or NANO"
+  #error "This sketch is primarily for the AVR series, like the UNO or NANO"
 #endif
 
-#define debug(x) Serial.print(x)  // commnet out this line if you do not want the debugging
-#ifndef debug
-  #define debug
+#define DEBUG   // uncomment this line to be able to use 8 inputs and 8 servos, 
+                // leave-in to do usb debugging and have 6 inputs and 6 servos
+#ifdef DEBUG
+  #define debug(x) Serial.print(x)  // commnet out this line if you do not want the debugging
+#else
+  #define debug(x)
 #endif
 
 //#include <Servo.h>
 #include <ServoEasing.hpp>  // great library for gettin slow servo action, including bounces
 #include <EEPROM.h>         // will save servo positions, including current position for each
+
 
 //#define ALTERNATE         // activate Alternate action -- good for buttons, as each button push will toggle the servo position
 //#define INIT              // uncomment to initialize the EEPROM to default positions
@@ -71,7 +74,7 @@
 #define MAXPOSN 180         // minimum position for a servo in degrees
 
 
-#ifdef debug
+#ifdef DEBUG
   #define nservos 6
   uint8_t servoPin[nservos]   = {2, 3, 4, 5, 6, 7};  // digital, not rx/tx
   uint8_t controlPin[nservos] = {8, 9,10,11,12,13};  // only using 6 servos, cannot use  0&1 as Serial is used for debugging
@@ -82,8 +85,7 @@
 #endif
 
 uint8_t spos[3][nservos];   // 0=firstPos, 1=secondPos, 2=currentPos  This is saved to EEPROM
-//Servo servo[nservos];     // use this with regular Servo lib
-ServoEasing servo[nservos]; // use this with ServoEasing lib
+ServoEasing servo[nservos];     // use this with regular Servo lib
 
 // Button pins
 #define nextservo 14  // A0   Next-Servo button
@@ -94,12 +96,12 @@ ServoEasing servo[nservos]; // use this with ServoEasing lib
 // activecontrol variables
 uint8_t activeServo = 0;
 uint8_t activePos = 0;
-long lastPress = 0;      // used for EEPROM updating after changes
+long lastchange = 0;     // remember when last input or button change occurs
 
 void inputScan() {     // set servo to match input, if it has changed
   uint8_t cpos;
   static long lastchange;             // remember when last input change occurs
-  //Serial.print("\n servos:");
+  
   for(uint8_t s=0; s<nservos; s++) {
     #ifdef ALTERNATE
       if(!digitalRead(controlPin[s])) cpos = !spos[2][s];
@@ -115,16 +117,10 @@ void inputScan() {     // set servo to match input, if it has changed
       debug("\n input:"); debug(s); debug("="); debug(spos[cpos][s]);
     }
   }
-  if(lastchange && millis()>(lastchange+20000)) { // if no changes for 20 seconds,
-    EEPROM.put(0,spos);                           // ... then save spos[][]
-    debug("\n positions saved");
-    lastchange = 0;                               // and don't save again until something else changes
-  }
 }
 
 void setup() {
-  #ifndef debug
-  #else
+  #ifdef DEBUG
     Serial.begin(115200);
     delay(2000);
     debug("\n\n Hello\n");
@@ -132,8 +128,9 @@ void setup() {
 
   // check EEPROM, and if not intialized, intialize it
   uint8_t mn = EEPROM.read(0);                    // read magic number at location 0
-  if(mn != 0xA5) {                                // if not present, write it and initialize EEPROM
-    EEPROM.write(0, 0xA5);
+  if(mn != 0x5A) {                                // if not present, write it and initialize EEPROM
+    debug("\nInitialize eeprom\n");
+    EEPROM.write(0, 0x5A);
     for(uint8_t i=0; i<nservos; i++) {            // .. then for each servo, set its positions
       spos[0][i] = (MAXPOSN-MINPOSN)/2 + 5;       // first position half-way plus a bit    
       spos[1][i] = (MAXPOSN-MINPOSN)/2 - 5;       // second position
@@ -143,13 +140,19 @@ void setup() {
   }
  
   EEPROM.get(1,spos);                      // retrieve servo positions and current position
-  debug("\nRetrieve data from eeprom");
+  debug("\nRetrieve data from eeprom\n");
+  for(int i=0; i<nservos; i++) {
+    debug("    "); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]); debug("\n");
+  }
+  debug("\n\n");
+
+  // Attach the servos
   for(int i=0; i<nservos; i++) {           // and setup and update the servos
     servo[i].attach(servoPin[i]);
     servo[i].setEasingType(EASE_CUBIC_IN_OUT); // user choice
     servo[i].write( spos[spos[2][i]][i] );
-    debug("\n"); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]);
   }
+  
   setSpeedForAllServos(SERVOSPEED);  // common to all servos
   pinMode(up, INPUT_PULLUP);         // setup the button pins
   pinMode(down, INPUT_PULLUP);
@@ -166,59 +169,68 @@ void loop() {
   // Button processing
   while(digitalRead(up)==0)          // test 'up'-button
   {
-    lastPress = millis();
+    lastchange = millis();
     if( spos[activePos][activeServo] < MAXPOSN ) spos[activePos][activeServo]++;
     servo[activeServo].write(spos[activePos][activeServo]);
     debug("\n Up ");
     debug(" servo="); debug(activeServo);
     debug(" pos="); debug(activePos);
     debug(" pos[][]="); debug(spos[activePos][activeServo]);
-    delayt -= 10;
+    delayt -= 10;               // speed up the movement with longer press of the button
     if(delayt<50) delayt=50;
     delay(delayt);
   }
   while(digitalRead(down)==0)        // "Down" button
   {
-    lastPress = millis();            // prolonged press gives accelerating movement
+    lastchange = millis();             // prolonged press gives accelerating movement
     if( spos[activePos][activeServo] > MINPOSN ) spos[activePos][activeServo]--;
     servo[activeServo].write(spos[activePos][activeServo]);
     debug("\n Down ");
     debug(" servo="); debug(activeServo);
     debug(" pos="); debug(activePos);
     debug(" pos[][]="); debug(spos[activePos][activeServo]);
+    debug("\n");
     delayt -= 10;                    // decrease the period between movements
     if(delayt<50) delayt=50;         // .. but not too fast!
     delay(delayt);                   // delay between each movement
   }
   if(digitalRead(nextservo)==0)          // "Next Servo" button
   {
-    lastPress = millis();
+    lastchange = millis();
+    while( digitalRead(nextservo)==0 ) {   // if button pressed for 2 seconds, revert to the first servo
+      if( (millis()-lastchange)>2000 ) activeServo = nservos;
+    }
     if( ++activeServo >= nservos) activeServo = 0;
-    servo[activeServo].write(  spos[activePos][activeServo] );
+    servo[activeServo].startEaseTo(  spos[activePos][activeServo] );
     debug("\n next servo ");
     debug(" servo="); debug(activeServo);
     debug(" pos="); debug(activePos);
     debug(" pos[][]="); debug(spos[activePos][activeServo]);
+    debug("\n");
     delay(200);
   }
   if(digitalRead(nextposn)==0)          // "Next Position" button
   {
-    lastPress = millis();
+    lastchange = millis();
     if( ++activePos > 1) activePos = 0;
-    //servo[activeServo].write( spos[activePos][activeServo] );
     servo[activeServo].startEaseTo( spos[activePos][activeServo] );
     debug("\n next pos ");
     debug(" servo="); debug(activeServo);
     debug(" pos="); debug(activePos);
     debug(" pos[][]="); debug(spos[activePos][activeServo]);
+    debug("\n");
     delay(200);
   }
   // update EEPROM after servo mods
-  if(lastPress!=0 && millis()>(lastPress+20000))     // save the positions of the servos if last change was 20s ago
+  if(lastchange!=0 && millis()>(lastchange+20000))     // save the positions of the servos if last change was 20s ago
   {
-    EEPROM.put(0,spos);                               // save settings
-    lastPress = 0;
-    debug("\n Saved");
+    EEPROM.put(1,spos);                               // save settings
+    lastchange = 0;
+    debug("\n Saved\n");
+    for(int i=0; i<nservos; i++) {
+      debug("    "); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]); debug("\n");
+    }
+    debug("\n");
     spos[2][activeServo] = 2;  // resync inputs by setting position to impossible value, so it gets updated by input scan
     activeServo = 0;
   }
