@@ -17,14 +17,14 @@
 //   Then use Up and Down to change the selected position, press nextposn and then Up/Down to change the other position.  
 // The position data is saved to EEPROM after 20 seconds of inactivity of the program buttons or the inputs.
 
-//          +------+
-//  input1--| Nano |--servo1
-//         ...
-//  input8--|      |--servo9
-//          +------+
-//          / | \  \
-// nextservo  |  up down
-//         nextposn
+//           +----------+   +----------+
+//   input1--| Nano  SCL|---|          |----servo1
+//          ...      SDA|---| PCA9685 ...
+//  input16--|          |   |          |----servo16
+//           +----------+   +----------+
+//             / | \  \     
+//    nextservo  |  up down
+//            nextposn
 
 // Using a DPST switch per line:
 //   Connect one side to 5V, and the other to ground, and the centre to one input
@@ -56,7 +56,8 @@
   #error "This sketch is primarily for the AVR series, like the UNO or NANO"
 #endif
 
-#define DEBUG
+#define DEBUG   // uncomment this line to be able to use 16 inputs and 16 servos, 
+                // leave-in to do usb debugging and have 14 inputs and 14 servos
 #ifdef DEBUG
   #define debug(x) Serial.print(x)  // commnet out this line if you do not want the debugging
 #else
@@ -81,21 +82,15 @@
 #define MAXPOSN 180         // minimum position for a servo in degrees
 
 
-#ifdef debug  // uncomment this line to be able to use 16 inputs and 16 servos, leave-in to do usb debugging
+#ifdef DEBUG  
   #define nservos 14
-  //uint8_t servoPin[nservos]   = {2, 3, 4, 5, 6, 7};  // digital, not rx/tx
   uint8_t controlPin[nservos] = {2,3,4,5,6,7,8, 9,10,11,12,13};  // only using 6 servos, cannot use  0&1 as Serial is used for debugging
 #else
   #define nservos 16
-  //uint8_t servoPin[nservos]   = {0, 1, 2, 3, 4, 5, 6, 7};  // remaining digital + two analog
-  //                             D0 ............D8 D9 D10 D11 D12 D13 A6 A7
   uint8_t controlPin[nservos] = {0,1,2,3,4,5,6,7,8, 9, 10, 11, 12, 13,20,21};  // including rx and tx -- DO NOT USE SERIAL for debugging
 #endif
 
 uint8_t spos[3][nservos];   // 0=firstPos, 1=secondPos, 2=currentPos  This is saved to EEPROM
-//Servo servo[nservos];     // use this with regular Servo lib
-//ServoEasing servo[nservos]; // use this with ServoEasing lib
-//ServoEasing servo[8]; // If you use more than one PCA9685 you probably must modify MAX_EASING_SERVOS
 ServoEasing servo[nservos](PCA9685_DEFAULT_ADDRESS);
 
 // Button pins
@@ -111,7 +106,7 @@ long lastchange = 0;     // remember when last input or button change occurs
 
 void inputScan() {     // set servo to match input, if it has changed
   uint8_t cpos;
-  //Serial.print("\n servos:");
+
   for(uint8_t s=0; s<nservos; s++) {
     #ifdef ALTERNATE
       if(!digitalRead(controlPin[s])) cpos = !spos[2][s];
@@ -139,7 +134,7 @@ void setup() {
   // check EEPROM, and if not intialized, intialize it
   uint8_t mn = EEPROM.read(0);                    // read magic number at location 0
   if(mn != 0xA5) {                                // if not present, write it and initialize EEPROM
-    debug("\nINitialize eeprom\n");
+    debug("\nInitialize eeprom\n");
     EEPROM.write(0, 0xA5);
     for(uint8_t i=0; i<nservos; i++) {            // .. then for each servo, set its positions
       spos[0][i] = (MAXPOSN-MINPOSN)/2 + 5;       // first position half-way plus a bit    
@@ -171,7 +166,6 @@ void setup() {
   pinMode(nextposn, INPUT_PULLUP);
   for(int i=0; i<nservos; i++) {     // setup the servo pins
     pinMode(controlPin[i], INPUT_PULLUP);
-    //pinMode(servoPin[i], OUTPUT);
   }
 }
 
@@ -225,7 +219,6 @@ void loop() {
   {
     lastchange = millis();
     if( ++activePos > 1) activePos = 0;
-    //servo[activeServo].write( spos[activePos][activeServo] );
     servo[activeServo].startEaseTo( spos[activePos][activeServo] );
     debug("\n next pos ");
     debug(" servo="); debug(activeServo);
@@ -239,9 +232,9 @@ void loop() {
   {
     EEPROM.put(1,spos);                               // save settings
     lastchange = 0;
-    debug("\n Saved");
+    debug("\n Saved\n");
     for(int i=0; i<nservos; i++) {
-      debug("\n"); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]); debug("\n");
+      debug("   "); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]); debug("\n");
     }
     spos[2][activeServo] = 2;  // resync inputs by setting position to impossible value, so it gets updated by input scan
     activeServo = 0;
