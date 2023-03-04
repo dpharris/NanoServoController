@@ -35,7 +35,7 @@ This will require the "#define ALTERNATE" line to be uncommented in the sketch.
 
 # Using a PCA9685 PWM board to drive the servos
 
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/222856031-bc101105-6451-45e5-862d-111ca2ee255c.png">
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/222863756-b29e5ded-535e-4c69-9af6-d1678387f781.png">
 
 # Using with LCC Tower
 
