@@ -1,7 +1,7 @@
 # NanoServoController
 A servo controller that uses a Nano, and has 8 channels of servos controlled by 8 inputs.  In addition, two servo endpoints can be set with 4 additional inputs.  
 
-The inputs can be connected to DPST slide or toggle switched with the centre to the board pins D0-D7 and the other two terminals connected to groaund and 5V.  Or, 8 pushbuttons connected to ground and to D0-D7.  In this case one has to uncomment one line in tne sketch: "#define ALTERNATE" to allow the pushbuttons to choose the two servo psotitions alternately.  
+The inputs can be connected to SPDT slide or toggle switched with the centre to the board pins D0-D7 and the other two terminals connected to groaund and 5V.  Or, 8 pushbuttons connected to ground and to D0-D7.  In this case one has to uncomment one line in tne sketch: "#define ALTERNATE" to allow the pushbuttons to choose the two servo psotitions alternately.  
 
 The outputs D8-D13, A4 and A5 are connected to eight servos.  
 
@@ -18,11 +18,11 @@ It is also possible to connect this to model raliroad accessories, such as RRCir
 
 Copy the code into a new sketch in Arduin IDE.  You should use Library Manager to download the ServoEasing library.  
 
-# Using DPST switches
+# Using SPDT switches
 
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/538698/216859313-27cc5578-d9dc-42cc-be6b-92511c8e8620.png">
 
-# Using mother board and DPST switches
+# Using mother board and SPDT switches
 
 Inexpensive motherboards can be used to make life easier, since they have a power supply and servo connectors, for example: https://www.aliexpress.com/item/1005002054420577.html
 
