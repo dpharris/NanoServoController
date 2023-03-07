@@ -24,7 +24,7 @@
 // nextservo  |  up down
 //         nextposn
 
-// Using a DPST switch per line:
+// Using a SPDT switch per line:
 //   Connect one side to 5V, and the other to ground, and the centre to one input
 //   Comment out the ALTERNATE code line.
 //   The servo should follow the switch position.
