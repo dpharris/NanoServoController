@@ -1,5 +1,5 @@
 # NanoServoController
-A servo controller that uses a Nano, and has 8 channels of servos controlled by 8 inputs.  In addition, two servo endpoints can be set with 4 additional inputs.  
+A servo controller that uses a Nano or other AVR and has 8 channels of servos controlled by 8 inputs.  In addition, two servo endpoints can be set with 4 additional inputs.  
 
 The inputs can be connected to SPDT slide or toggle switched with the centre to the board pins D0-D7 and the other two terminals connected to groaund and 5V.  Or, 8 pushbuttons connected to ground and to D0-D7.  In this case one has to uncomment one line in tne sketch: "#define ALTERNATE" to allow the pushbuttons to choose the two servo psotitions alternately.  
 
@@ -14,9 +14,15 @@ There are four more buttons defined, connected to A0-3, to change the servos end
   
 It is also possible to connect this to model raliroad accessories, such as RRCirkits LCC Tower.  
 
+#Extensions
+The sketch has been modified to:
+(1) Use use an external PCA9685, see AVR_ServoCOntroller_PCA9685.  This allows up to 16 servos.  
+(2) *Pending* Use a Pi Pico using native (PIO) servo-driver to allow 8 servos.  (This uses all PIO, so be aware.)
+(3) *Pending* Use a Pi Pico and a PCA9685.  This allows 16 servos.  
+
 # Compiling / Using
 
-Copy the code into a new sketch in Arduin IDE.  You should use Library Manager to download the ServoEasing library.  
+Copy one of the sketches into a new sketch in Arduino IDE.  You will need to use Library Manager to download the ServoEasing library.  
 
 # Using SPDT switches
 
