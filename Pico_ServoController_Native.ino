@@ -1,12 +1,9 @@
 
-// Pico Servo Controller Native
-// 
-// Ths sletch is written for the Pi PIco.  
-//
-// It uses servo-easing to obtain a slow smooth movement
+// Servo controller
+// == It uses servo-easing to obtain a slow smooth movement
 //    See: https://github.com/ArminJo/ServoEasing
 //
-// It has a variable number of input pins (nservos<=8), controlling an equal number of Servos
+// Variable number of input pins (nservos), controlling an equal number of Servos
 // Each input is monitored for change, and on a change the assocoaited servo is moved to one of two postions.  
 //   -- the inputs can be constant, or used as a toggle (uncomment the ALTERNATE define statement)
 // Four buttons control the two end positions of each servo:
@@ -83,7 +80,7 @@
 
 
 #define nservos 8
-uint8_t servoPins[nservos] =  {8, 9, 10, 11, 12, 13, 14, 15};  
+uint8_t servoPins[nservos] =  {8, 9, 10, 11, 12, 13, 14, 15};  //
 uint8_t controlPin[nservos] = {0, 1,  2, 3,  4,  5,  6,  7, };  
 
 uint8_t spos[3][nservos];   // 0=firstPos, 1=secondPos, 2=currentPos  This is saved to EEPROM
@@ -244,8 +241,11 @@ void loop() {
     for(int i=0; i<nservos; i++) {
       debug("   "); debug(i); debug(":"); debug(spos[0][i]);debug(","); debug(spos[1][i]);debug(","); debug(spos[2][i]); debug("\n");
     }
-    spos[2][activeServo] = 2;  // resync inputs by setting position to impossible value, so it gets updated by input scan
     activeServo = 0;
+    // put servos back to their saved positions
+    for(int i=0; i<nservos; i++) {
+      servo[i].write( spos[spos[2][i]][i] ); 
+    }
   }
  
   // process all servo inputs
