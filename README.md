@@ -17,9 +17,9 @@ Changes to the servo positions will be stored in EEPROM after 20 seconds of inac
 
 # Extensions
 The sketch has been modified to:
- - (1) Use use an external PCA9685, see **AVR_ServoController_PCA9685.ino**.  This allows up to 16 servos.  
- - (2) *Pending* Use a Pi Pico using native (PIO) servo-driver to allow 8 servos.  (This uses all PIO, so be aware.). **Pico_ServoCOntroller_Native.ino**.
- - (3) *Pending* Use a Pi Pico and a PCA9685.  This allows 16 servos.  **Pico_ServoController_PCA9685.ino**.
+ - AVR using use an external PCA9685, see **AVR_ServoController_PCA9685.ino**.  This allows up to 16 servos.  
+ - Pico using native (PIO) servo-driver to allow 8 servos.  (This uses all PIO, so be aware.). **Pico_ServoCOntroller_Native.ino**.
+ - Pico using a PCA9685.  This allows 16 servos.  **Pico_ServoController_PCA9685.ino**.
 
 # Compiling / Using
 
