@@ -1,7 +1,7 @@
 # NanoServoController
 This Servo Controller was originally designed for use with the Nano, but should work unchanged on the Uno, etc.  It has also been adapted to the Pico.  
 
-# AVR_ServoCOntroller_Native.ino
+# AVR_ServoController_Native.ino
 This sketch is written for the Nano and AVR series.  It has up to 8 input lines that controlup to 8 servos.  These inputs can be absolute (Active Low) or alternating, allowing use of toggles or push-buttons, or being connected to a accessory board.  
 
 The inputs can be connected to SPDT slide or toggle switched with the centre to the board pins D0-D7 and the other two terminals connected to groaund and 5V.  Or, 8 pushbuttons connected to ground and to D0-D7.  In this case one has to uncomment one line in tne sketch: "#define ALTERNATE" to allow the pushbuttons to choose the two servo psotitions alternately.  
